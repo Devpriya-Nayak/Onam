@@ -1,0 +1,779 @@
+/* ═══════════════════════════════════════════════
+   ONAM · Nithya Electronics, Kanhangad
+   Art direction: transparent-background PNG cutouts
+   floating on colour, no boxes or frames.
+   ═══════════════════════════════════════════════ */
+
+:root{
+  --cream:#FFF8EC;
+  --cream-2:#FFF3D6;
+  --sand:#F4EBD6;
+  --gold:#C9A227;
+  --gold-soft:#DCC98F;
+  --marigold:#F2A93B;
+  --saffron:#E8871E;
+  --red:#8C1D18;
+  --red-2:#A8261F;
+  --leaf:#1F6F4A;
+  --leaf-deep:#0F3D2E;
+  --leaf-pale:#DFF0E6;
+  --ink:#2A1A12;
+  --ink-soft:#6B5344;
+  --shadow:0 18px 50px -18px rgba(92,46,18,.35);
+  --radius:20px;
+  --font-display:"Fraunces",Georgia,"Times New Roman",serif;
+  --font-body:"DM Sans","Segoe UI",system-ui,sans-serif;
+  --font-ml:"Baloo Chettan 2","Noto Sans Malayalam","Nirmala UI",sans-serif;
+}
+
+*,*::before,*::after{box-sizing:border-box;}
+html{scroll-behavior:smooth;overflow-x:hidden;}
+body{
+  margin:0;
+  background:var(--cream);
+  color:var(--ink);
+  font-family:var(--font-body);
+  font-size:clamp(16px,1.05vw,18px);
+  line-height:1.7;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+img,svg{max-width:100%;}
+h1,h2,h3{font-family:var(--font-display);line-height:1.12;margin:0;font-weight:600;}
+p{margin:0 0 1.1em;}
+
+/* clipped rather than pushed off-screen, so it can never widen the page */
+.skip{
+  position:absolute;top:0;left:0;z-index:99;
+  width:1px;height:1px;overflow:hidden;
+  clip-path:inset(50%);white-space:nowrap;
+  background:var(--red);color:var(--cream);padding:.7em 1.2em;border-radius:0 0 10px 0;
+}
+.skip:focus{width:auto;height:auto;clip-path:none;overflow:visible;}
+
+/* A canvas is a replaced element: with no explicit size it falls back to its
+   intrinsic buffer width. Script sets the display size from clientWidth, which
+   is the layout viewport excluding any scrollbar. */
+#petals{position:fixed;top:0;left:0;display:block;pointer-events:none;z-index:5;}
+
+/* ═══════════════════════════════════════════════
+   ART SLOTS — every PNG on the page lives in one.
+   Reserves its aspect ratio so nothing jumps while
+   loading, and shows a labelled placeholder if the
+   file is missing.
+   ═══════════════════════════════════════════════ */
+.art-slot{
+  position:relative;
+  aspect-ratio:var(--ar,1/1);
+  display:flex;align-items:center;justify-content:center;
+}
+.art-slot img{
+  width:100%;height:100%;
+  object-fit:contain;
+  display:block;
+  /* cutouts get their shadow from CSS, never baked into the PNG */
+  filter:drop-shadow(0 24px 34px rgba(92,46,18,.28));
+}
+
+/* soft light pooled behind a cutout so it sits on the page */
+.art-slot.glow-warm::before,
+.art-slot.glow-cool::before{
+  content:"";position:absolute;inset:-6%;
+  border-radius:50%;
+  z-index:-1;
+  filter:blur(30px);
+}
+.art-slot.glow-warm::before{background:radial-gradient(circle,rgba(242,169,59,.34),rgba(242,169,59,0) 68%);}
+.art-slot.glow-cool::before{background:radial-gradient(circle,rgba(159,216,232,.26),rgba(159,216,232,0) 68%);}
+
+/* placeholder shown until the PNG exists */
+.art-slot.missing img{display:none;}
+.art-slot.missing{
+  border:2px dashed var(--gold-soft);
+  border-radius:16px;
+  background:
+    repeating-linear-gradient(45deg,rgba(201,162,39,.07) 0 12px,transparent 12px 24px);
+  filter:none;
+}
+.art-slot.missing::before{display:none;}
+.art-slot.missing::after{
+  content:"🖼  " attr(data-file);
+  font-family:var(--font-body);
+  font-size:.8rem;letter-spacing:.04em;
+  color:var(--ink-soft);
+  opacity:.85;
+  text-align:center;padding:1rem;
+  word-break:break-all;
+}
+.chapter.dark .art-slot.missing::after,
+.interactive .art-slot.missing::after,
+.shop .art-slot.missing::after{color:rgba(255,243,214,.72);}
+
+.art-slot.spin img{animation:spin 68s linear infinite;}
+
+/* ═══════════ HERO ═══════════ */
+.hero{
+  position:relative;
+  min-height:100svh;
+  display:flex;align-items:center;justify-content:center;
+  text-align:center;
+  padding:5rem 1.25rem 8rem;
+  overflow:hidden;
+  /* "Temple Maroon" — deep sanctum red rising into saffron, with a gold burst
+     behind the pookalam. See hero-preview.html for the alternatives. */
+  background:
+    radial-gradient(circle at 50% 33%,rgba(255,196,92,.55),rgba(255,196,92,0) 48%),
+    radial-gradient(ellipse 130% 58% at 50% 105%,rgba(240,160,50,.75),transparent 70%),
+    linear-gradient(180deg,#2C0705 0%,#4E0F0B 28%,#6E1611 55%,#8C2318 80%,#A8351C 100%);
+  isolation:isolate;
+}
+.hero-sky{position:absolute;inset:0;z-index:-1;}
+/* aligned with the gold burst so the light breathes instead of competing */
+.sun{
+  position:absolute;left:50%;top:20%;transform:translateX(-50%);
+  width:min(72vw,520px);aspect-ratio:1;border-radius:50%;
+  background:radial-gradient(circle,rgba(255,226,160,.28) 0%,rgba(242,169,59,.14) 45%,transparent 70%);
+  animation:breathe 9s ease-in-out infinite;
+}
+.cloud{
+  position:absolute;height:90px;border-radius:999px;
+  background:radial-gradient(ellipse at center,rgba(255,248,236,.16),rgba(255,248,236,0) 70%);
+  filter:blur(18px);
+}
+.cloud.c1{width:340px;top:20%;left:-24%;animation:drift 52s linear infinite;}
+.cloud.c2{width:240px;top:35%;left:-32%;animation:drift 72s linear infinite 8s;}
+@keyframes drift{to{transform:translateX(190vw);}}
+@keyframes breathe{50%{transform:translateX(-50%) scale(1.08);opacity:.85;}}
+
+.kasavu-band{
+  position:absolute;top:0;left:0;right:0;height:14px;
+  background:linear-gradient(90deg,var(--gold),#EBD9A8 20%,var(--gold) 40%,#EBD9A8 60%,var(--gold) 80%,#EBD9A8);
+  box-shadow:0 2px 0 rgba(255,248,236,.5);
+}
+
+.hero-inner{position:relative;max-width:min(820px,100%);z-index:2;}
+.ml-title,.foot-ml,.ml-wish,.card-ml{max-width:100%;}
+
+/* Masthead — set like a shop letterhead rather than a floating chip:
+   a hairline rule with a lozenge, the name in tracked-out display caps,
+   and the town underneath in Malayalam. */
+.masthead{margin-bottom:2rem;}
+.mh-orn{
+  display:flex;align-items:center;justify-content:center;gap:.85rem;
+  margin:0 0 .85rem;
+}
+.mh-orn::before,.mh-orn::after{
+  content:"";height:1px;width:clamp(40px,11vw,110px);
+}
+.mh-orn::before{background:linear-gradient(90deg,transparent,var(--gold));}
+.mh-orn::after{background:linear-gradient(90deg,var(--gold),transparent);}
+.mh-orn span{
+  width:7px;height:7px;flex:none;
+  background:var(--gold);transform:rotate(45deg);
+  box-shadow:0 0 10px rgba(201,162,39,.8);
+}
+.mh-name{
+  font-family:var(--font-display);
+  font-size:clamp(1.05rem,2.7vw,1.45rem);
+  font-weight:600;
+  letter-spacing:.26em;
+  text-transform:uppercase;
+  color:var(--cream);
+  margin:0 0 .35rem;
+  /* tracking adds space after the last letter — pull it back so it stays centred */
+  text-indent:.26em;
+}
+.mh-place{
+  font-family:var(--font-ml);
+  font-size:.82rem;
+  letter-spacing:.14em;
+  color:var(--gold-soft);
+  margin:0;
+}
+
+.hero-pookalam{position:relative;width:min(62vw,300px);margin:0 auto 1.4rem;}
+.hero-pookalam .art-slot img{filter:drop-shadow(0 16px 36px rgba(0,0,0,.4));}
+.lamp-glow{
+  position:absolute;inset:8%;border-radius:50%;
+  background:radial-gradient(circle,rgba(255,243,214,.42),transparent 62%);
+  animation:breathe 4.5s ease-in-out infinite;pointer-events:none;z-index:-1;
+}
+
+.ml-title{
+  font-family:var(--font-ml);
+  font-size:clamp(2.9rem,10vw,6.4rem);
+  color:var(--cream);
+  line-height:1.15;
+  text-shadow:0 6px 26px rgba(0,0,0,.35);
+  margin-bottom:.2em;
+}
+.hero-sub{
+  font-family:var(--font-display);
+  font-size:clamp(1.15rem,3vw,1.7rem);
+  color:#FFC96B;
+  letter-spacing:.02em;
+  margin-bottom:1.1rem;
+}
+.hero-lede{color:rgba(255,248,236,.86);max-width:44ch;margin-inline:auto;}
+
+.scroll-cue{
+  display:inline-flex;align-items:center;gap:.55rem;
+  margin-top:1.6rem;
+  color:var(--cream);text-decoration:none;
+  font-size:.85rem;letter-spacing:.16em;text-transform:uppercase;
+  border-bottom:1px solid rgba(255,248,236,.35);
+  padding-bottom:.35rem;
+}
+.scroll-cue svg{animation:bob 1.9s ease-in-out infinite;}
+.scroll-cue:hover{color:var(--marigold);}
+@keyframes bob{50%{transform:translateY(6px);}}
+
+.hero-wave{position:absolute;bottom:-1px;left:0;width:100%;height:110px;z-index:3;}
+
+/* ═══════════ CHAPTERS ═══════════ */
+.chapter{padding:clamp(4.5rem,10vw,8rem) 1.25rem;position:relative;}
+.chapter.alt{background:var(--cream-2);}
+.chapter.dark{background:var(--leaf-deep);color:var(--cream-2);}
+.chapter.dark h2{color:var(--cream);}
+.chapter.dark .ch-num{color:var(--marigold);}
+.chapter.dark .muted{color:rgba(255,243,214,.62);}
+.chapter.dark strong{color:var(--marigold);}
+.chapter.dark .art-slot img{filter:drop-shadow(0 24px 40px rgba(0,0,0,.5));}
+
+.ch-wrap{
+  max-width:1120px;margin-inline:auto;
+  display:grid;grid-template-columns:1.05fr .95fr;
+  gap:clamp(2rem,5vw,4.5rem);align-items:center;
+}
+.ch-wrap.reverse .ch-art{order:2;}
+.ch-wrap.reverse .ch-text{order:1;}
+.ch-art{margin:0;}
+
+.ch-num{
+  display:flex;align-items:center;gap:.7rem;
+  font-size:.75rem;letter-spacing:.24em;text-transform:uppercase;
+  color:var(--red);font-weight:700;margin-bottom:.9rem;
+}
+.ch-num span{
+  font-family:var(--font-ml);font-size:1.35rem;letter-spacing:0;text-transform:none;
+  color:var(--gold);
+  padding-right:.7rem;border-right:2px solid var(--gold-soft);
+}
+.ch-text h2{
+  font-size:clamp(1.9rem,4.6vw,3rem);
+  margin-bottom:.7em;
+  color:var(--leaf-deep);
+}
+.chapter.dark .ch-text h2{color:var(--cream);}
+.ch-text p{max-width:52ch;}
+.ch-text em{color:var(--red-2);font-style:italic;}
+.ch-text strong{color:var(--red);}
+.muted{color:var(--ink-soft);font-style:italic;}
+.pull{
+  font-family:var(--font-display);
+  font-size:1.2rem;line-height:1.5;
+  border-left:4px solid var(--marigold);
+  padding-left:1.1rem;margin-block:1.4rem;
+}
+blockquote.ml{
+  margin:1.6rem 0;padding:1.25rem 1.4rem;
+  background:var(--cream);
+  border:1px solid var(--gold-soft);
+  border-left:5px solid var(--gold);
+  border-radius:0 14px 14px 0;
+  font-family:var(--font-ml);
+  font-size:1.22rem;line-height:1.75;color:var(--leaf-deep);
+}
+blockquote.ml cite{
+  display:block;margin-top:.7rem;
+  font-family:var(--font-body);font-size:.86rem;font-style:normal;
+  color:var(--ink-soft);
+}
+
+/* ═══════════ SECTION HEADS ═══════════ */
+.section-head{max-width:640px;margin:0 auto clamp(2.5rem,5vw,4rem);text-align:center;}
+.eyebrow{
+  font-family:var(--font-ml);
+  font-size:1rem;letter-spacing:.08em;
+  color:var(--red);margin-bottom:.4rem;
+}
+.eyebrow.light{color:var(--marigold);}
+.section-head h2{font-size:clamp(1.9rem,4.4vw,2.9rem);color:var(--leaf-deep);margin-bottom:.5em;}
+.lede{color:var(--ink-soft);}
+
+/* ═══════════ TRADITIONS ═══════════ */
+.traditions{
+  padding:clamp(4.5rem,10vw,8rem) 1.25rem;
+  background:
+    radial-gradient(circle at 12% 8%,rgba(242,169,59,.16),transparent 40%),
+    radial-gradient(circle at 88% 88%,rgba(31,111,74,.14),transparent 42%),
+    var(--cream);
+}
+/* Fixed 3-up: six cards land as 3+3. auto-fit made 4 columns on wide screens,
+   which orphaned the last two. */
+.trad-grid{
+  max-width:1120px;margin-inline:auto;
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:1.5rem;
+  align-items:stretch;
+}
+.trad{display:flex;flex-direction:column;}
+.trad{
+  background:var(--cream-2);
+  border:1px solid var(--gold-soft);
+  border-radius:var(--radius);
+  padding:1.5rem;
+  transition:transform .35s cubic-bezier(.22,1,.36,1),box-shadow .35s;
+}
+.trad:hover{transform:translateY(-8px);box-shadow:var(--shadow);}
+.trad:hover .trad-art img{transform:scale(1.06) rotate(-1.5deg);}
+
+/* cutout sits on a tinted plate rather than in a photo frame */
+.trad-art{
+  position:relative;
+  margin-bottom:1.1rem;
+  padding:.9rem;
+  border-radius:16px;
+  background:radial-gradient(ellipse at 50% 40%,#FFFDF7 0%,var(--cream) 55%,#F3E3C4 100%);
+  box-shadow:inset 0 0 0 1px rgba(201,162,39,.35);
+  overflow:hidden;
+}
+.trad-art img{
+  transition:transform .45s cubic-bezier(.22,1,.36,1);
+  filter:drop-shadow(0 14px 20px rgba(92,46,18,.24));
+}
+
+/* ═══════════════════════════════════════════════
+   NAIVEDYA — its own band, not a box inside a card
+   ═══════════════════════════════════════════════ */
+.naivedya{
+  padding:clamp(3rem,7vw,5.5rem) 1.25rem;
+  background:
+    radial-gradient(circle at 15% 20%,rgba(242,169,59,.20),transparent 45%),
+    radial-gradient(circle at 85% 80%,rgba(203,32,45,.12),transparent 45%),
+    linear-gradient(180deg,var(--cream) 0%,#FBEED2 100%);
+}
+.nv-card{
+  max-width:1000px;margin-inline:auto;
+  display:grid;grid-template-columns:.85fr 1.15fr;
+  gap:clamp(1.5rem,4vw,3rem);align-items:center;
+  background:var(--cream);
+  border:1px solid var(--gold-soft);
+  border-radius:24px;
+  padding:clamp(1.5rem,3.5vw,2.5rem);
+  box-shadow:0 26px 60px -26px rgba(92,46,18,.45);
+  position:relative;overflow:hidden;
+}
+/* kasavu edge down the side */
+.nv-card::before{
+  content:"";position:absolute;inset:0 auto 0 0;width:6px;
+  background:linear-gradient(180deg,var(--gold),#EBD9A8 50%,var(--gold));
+}
+.nv-media{
+  border-radius:18px;overflow:hidden;padding:.75rem;
+  background:radial-gradient(ellipse at 50% 40%,#FFFDF7,#F3E3C4);
+  box-shadow:inset 0 0 0 1px rgba(201,162,39,.35);
+}
+.nv-media img{filter:drop-shadow(0 16px 22px rgba(92,46,18,.26));}
+
+.nv-badge{
+  display:inline-flex;align-items:center;gap:.45rem;
+  font-size:.72rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+  color:#12603F;background:rgba(31,111,74,.12);
+  border:1px solid rgba(31,111,74,.35);
+  padding:.35rem .8rem;border-radius:999px;margin-bottom:.9rem;
+}
+.nv-dot{width:9px;height:9px;border-radius:50%;background:#1F6F4A;box-shadow:0 0 0 3px rgba(31,111,74,.2);}
+.nv-eyebrow{
+  font-family:var(--font-ml);font-size:1rem;
+  color:var(--red);margin-bottom:.35rem;
+}
+.naivedya h2{
+  font-size:clamp(1.6rem,3.6vw,2.4rem);
+  color:var(--leaf-deep);margin-bottom:.55em;
+}
+.nv-copy{color:var(--ink-soft);max-width:46ch;margin-bottom:1.4rem;}
+.nv-copy strong{color:var(--red);}
+
+.nv-actions{display:flex;flex-wrap:wrap;gap:.75rem;margin-bottom:1rem;}
+.nv-link,.nv-call{
+  display:inline-flex;align-items:center;gap:.5rem;
+  font-size:.95rem;font-weight:700;
+  padding:.8rem 1.5rem;border-radius:999px;
+  text-decoration:none;
+  transition:transform .2s,box-shadow .2s,background .2s;
+}
+.nv-link{
+  color:#fff;background:#CB202D;               /* Zomato red */
+  box-shadow:0 12px 26px -10px rgba(203,32,45,.75);
+}
+.nv-link:hover{transform:translateY(-2px);background:#E0242F;box-shadow:0 16px 30px -10px rgba(203,32,45,.85);}
+.nv-call{
+  color:var(--leaf-deep);background:transparent;
+  border:1.5px solid rgba(31,111,74,.5);
+}
+.nv-call:hover{transform:translateY(-2px);background:rgba(31,111,74,.08);}
+.nv-note{font-size:.85rem;color:var(--ink-soft);margin:0;}
+.trad h3{
+  font-family:var(--font-ml);
+  font-size:1.4rem;color:var(--red);margin-bottom:.35em;
+  display:flex;flex-wrap:wrap;align-items:baseline;gap:.55rem;
+}
+.trad h3 span{
+  font-family:var(--font-display);font-size:.95rem;
+  color:var(--ink-soft);font-weight:400;letter-spacing:.02em;
+}
+.trad p{font-size:.94rem;color:var(--ink-soft);margin:0;}
+
+/* ═══════════ INTERACTIVE POOKALAM ═══════════ */
+.interactive{
+  padding:clamp(4.5rem,10vw,8rem) 1.25rem;
+  background:linear-gradient(180deg,var(--leaf-deep),#164A36);
+  color:var(--cream-2);
+}
+.interactive .section-head h2{color:var(--cream);}
+.interactive .lede{color:rgba(255,243,214,.72);}
+.interactive .eyebrow{color:var(--marigold);}
+
+.pook-stage{
+  max-width:960px;margin-inline:auto;
+  display:grid;grid-template-columns:1.1fr .9fr;
+  gap:clamp(2rem,5vw,4rem);align-items:center;
+}
+.pook-holder{text-align:center;}
+.pook-canvas-wrap{
+  position:relative;
+  width:100%;max-width:420px;aspect-ratio:1;
+  margin:0 auto 1.4rem;
+  border-radius:50%;
+  overflow:hidden;                 /* crops the base art to a clean circle */
+  background:radial-gradient(circle,rgba(255,248,236,.10),rgba(255,248,236,.02) 70%);
+  box-shadow:0 24px 60px -20px rgba(0,0,0,.55),0 0 0 3px rgba(201,162,39,.45);
+  cursor:pointer;
+  touch-action:manipulation;
+}
+.pook-base,
+#pookCanvas{
+  position:absolute;inset:0;
+  width:100%;height:100%;
+}
+/* the base art has its own background, so fill the circle edge to edge */
+.pook-base{object-fit:cover;}
+#pookCanvas{object-fit:contain;}
+.pook-base.hidden{display:none;}
+#pookCanvas{z-index:2;}
+
+.pook-side{text-align:left;}
+.count-label{
+  font-size:.75rem;letter-spacing:.22em;text-transform:uppercase;
+  color:var(--marigold);margin-bottom:.2rem;
+}
+.count{
+  font-family:var(--font-display);
+  font-size:clamp(3rem,9vw,5rem);line-height:1;
+  color:var(--cream);margin-bottom:.5rem;
+  font-variant-numeric:tabular-nums;
+}
+.count-note{font-size:.9rem;color:rgba(255,243,214,.66);max-width:34ch;}
+
+/* buttons */
+.btn-primary,.btn-ghost{
+  font-family:var(--font-body);font-size:.95rem;font-weight:700;
+  padding:.85rem 1.6rem;border-radius:999px;cursor:pointer;
+  transition:transform .2s,box-shadow .2s,background .2s,color .2s;
+}
+.btn-primary{
+  background:var(--marigold);color:#3B2408;border:none;
+  box-shadow:0 10px 26px -10px rgba(242,169,59,.9);
+}
+.btn-primary:hover{transform:translateY(-2px);background:#FFC15E;}
+.btn-primary:active{transform:translateY(1px);}
+.btn-ghost{background:transparent;color:inherit;border:1.5px solid currentColor;opacity:.8;}
+.btn-ghost:hover{opacity:1;transform:translateY(-2px);}
+.pook-side .btn-ghost{margin-top:1rem;}
+:focus-visible{outline:3px solid var(--marigold);outline-offset:3px;border-radius:6px;}
+
+/* ═══════════ WISH MAKER ═══════════ */
+.wishmaker{padding:clamp(4.5rem,10vw,8rem) 1.25rem;background:var(--cream-2);}
+.wish-layout{
+  max-width:1060px;margin-inline:auto;
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:clamp(2rem,5vw,4rem);align-items:center;
+}
+.wish-form label{display:block;margin-bottom:1.1rem;}
+.wish-form label span{
+  display:block;font-size:.74rem;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--ink-soft);margin-bottom:.45rem;font-weight:700;
+}
+.wish-form input,.wish-form select{
+  width:100%;padding:.85rem 1rem;
+  font-family:var(--font-body);font-size:1rem;color:var(--ink);
+  background:var(--cream);
+  border:1.5px solid var(--gold-soft);border-radius:12px;
+}
+.wish-form input:focus,.wish-form select:focus{border-color:var(--marigold);outline:none;box-shadow:0 0 0 4px rgba(242,169,59,.22);}
+.wish-actions{display:flex;flex-wrap:wrap;gap:.75rem;margin-top:1.4rem;}
+.wish-actions .btn-ghost{color:var(--red);}
+.copied{
+  min-height:1.5em;margin-top:.9rem;font-size:.9rem;
+  color:var(--leaf);font-weight:700;
+  opacity:0;transition:opacity .25s;
+}
+.copied.show{opacity:1;}
+
+.card-preview{perspective:1200px;}
+.card{
+  background:var(--cream);
+  border-radius:18px;
+  box-shadow:var(--shadow);
+  overflow:hidden;
+  border:1px solid var(--gold-soft);
+  transition:transform .5s cubic-bezier(.22,1,.36,1);
+}
+.card:hover{transform:rotateX(3deg) rotateY(-3deg) translateY(-6px);}
+.card-kasavu{height:22px;background:linear-gradient(90deg,var(--gold),#EBD9A8 25%,var(--gold) 50%,#EBD9A8 75%,var(--gold));}
+.card-kasavu.top{border-bottom:3px solid var(--red);}
+.card-kasavu.bottom{border-top:3px solid var(--red);}
+.card-body{padding:2rem 1.75rem;text-align:center;}
+.card-motif{width:96px;margin:0 auto .8rem;}
+.card-motif img{animation:spin 48s linear infinite;filter:drop-shadow(0 8px 14px rgba(92,46,18,.22));}
+.card-to{font-family:var(--font-display);font-size:1.15rem;color:var(--red);margin-bottom:.5rem;}
+.card-ml{
+  font-family:var(--font-ml);
+  font-size:clamp(1.4rem,3.4vw,1.9rem);
+  color:var(--leaf-deep);line-height:1.4;margin-bottom:.8rem;
+}
+.card-line{color:var(--ink-soft);font-size:.98rem;max-width:34ch;margin-inline:auto;}
+.card-from{font-family:var(--font-display);color:var(--ink);margin-bottom:1.2rem;}
+.card-brand{
+  font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--gold);margin:0;
+  padding-top:.9rem;border-top:1px solid var(--gold-soft);
+}
+
+/* ═══════════ SHOP ═══════════ */
+.shop{
+  position:relative;overflow:hidden;
+  padding:clamp(4.5rem,10vw,8rem) 1.25rem;
+  background:
+    radial-gradient(circle at 50% 0%,rgba(242,169,59,.20),transparent 55%),
+    linear-gradient(180deg,#5E120F,#3A0806);
+  color:var(--cream-2);text-align:center;
+}
+.shop-lamp{
+  position:absolute;bottom:0;
+  width:clamp(90px,13vw,168px);
+  opacity:.9;pointer-events:none;
+}
+.shop-lamp.left{left:clamp(-1rem,3vw,4rem);}
+.shop-lamp.right{right:clamp(-1rem,3vw,4rem);transform:scaleX(-1);}
+.shop-lamp img{filter:drop-shadow(0 0 28px rgba(242,169,59,.55));}
+.shop-inner{position:relative;z-index:2;max-width:720px;margin-inline:auto;}
+.shop h2{font-size:clamp(1.8rem,4.6vw,2.8rem);color:var(--cream);margin-bottom:.8em;}
+.shop-copy{color:rgba(255,243,214,.84);max-width:56ch;margin-inline:auto;}
+.shop-copy.strong{color:var(--cream);font-family:var(--font-display);font-size:1.15rem;}
+.ml-wish{
+  font-family:var(--font-ml);
+  font-size:clamp(1.3rem,4vw,2rem);
+  color:var(--marigold);margin:1.6rem 0 2.2rem;
+}
+.offer{
+  background:rgba(255,248,236,.07);
+  border:1px dashed rgba(201,162,39,.7);
+  border-radius:var(--radius);
+  padding:1.6rem 1.4rem;
+}
+.offer-tag{font-family:var(--font-ml);font-size:1.05rem;color:var(--marigold);margin-bottom:.4rem;}
+.offer-text{color:var(--cream);font-size:1.05rem;margin-bottom:1.1rem;}
+.offer-meta{
+  display:flex;flex-wrap:wrap;gap:.6rem 1.4rem;justify-content:center;
+  font-size:.88rem;color:rgba(255,243,214,.75);
+}
+
+/* ═══════════ FOOTER ═══════════ */
+.foot{
+  position:relative;text-align:center;
+  padding:3.5rem 1.25rem 3rem;
+  background:var(--leaf-deep);color:var(--cream-2);
+}
+.foot-kasavu{
+  position:absolute;top:0;left:0;right:0;height:10px;
+  background:linear-gradient(90deg,var(--gold),#EBD9A8 20%,var(--gold) 40%,#EBD9A8 60%,var(--gold) 80%,#EBD9A8);
+}
+.foot-ml{font-family:var(--font-ml);font-size:clamp(1.8rem,6vw,2.6rem);color:var(--marigold);margin-bottom:.2em;}
+.foot-sub{font-family:var(--font-display);letter-spacing:.06em;color:var(--cream);margin-bottom:.8em;}
+.foot-note{font-size:.85rem;color:rgba(255,243,214,.6);margin:0;}
+.foot-note a{color:var(--marigold);text-decoration:none;}
+.foot-note a:hover{text-decoration:underline;}
+
+/* ═══════════ ANIMATION UTILITIES ═══════════ */
+.js .reveal{opacity:0;transform:translateY(34px);transition:opacity .9s cubic-bezier(.22,1,.36,1),transform .9s cubic-bezier(.22,1,.36,1);}
+.js .reveal[data-dir="left"]{transform:translate3d(-46px,18px,0);}
+.js .reveal[data-dir="right"]{transform:translate3d(46px,18px,0);}
+.js .reveal.in{opacity:1;transform:none;}
+
+@keyframes spin{to{transform:rotate(360deg);}}
+
+.float{animation:floaty 7s ease-in-out infinite;}
+@keyframes floaty{50%{transform:translateY(-14px);}}
+
+/* ═══════════════════════════════════════════════
+   RESPONSIVE
+   Ladder: ≥1101 desktop · 1100 · 880 (one column)
+   · 640 · 480 · 360 · landscape phones
+   ═══════════════════════════════════════════════ */
+
+/* long Malayalam words must never push the page sideways */
+h1,h2,h3,p,blockquote,li,a{overflow-wrap:break-word;}
+
+/* ── laptops / small desktops ── */
+@media (max-width:1100px){
+  .ch-wrap{gap:clamp(1.5rem,4vw,3rem);}
+  .trad-grid{gap:1.1rem;}
+}
+
+/* ── tradition cards: 3 → 2 → 1 ── */
+@media (max-width:960px){
+  .trad-grid{grid-template-columns:repeat(2,minmax(0,1fr));}
+}
+@media (max-width:520px){
+  .trad-grid{grid-template-columns:minmax(0,1fr);}
+}
+
+/* ── tablets and below: everything goes single column ── */
+@media (max-width:880px){
+  .ch-wrap,.pook-stage,.wish-layout{grid-template-columns:1fr;}
+  .ch-wrap.reverse .ch-art{order:1;}
+  .ch-wrap.reverse .ch-text{order:2;}
+  .js .reveal[data-dir="left"],.js .reveal[data-dir="right"]{transform:translate3d(0,34px,0);}
+
+  /* a 2:3 portrait at full width gets absurdly tall — rein it in */
+  .ch-art{max-width:min(100%,440px);margin-inline:auto;}
+  .ch-text{max-width:600px;margin-inline:auto;}
+
+  .pook-side{text-align:center;}
+  .count-note{margin-inline:auto;}
+  .wish-actions{justify-content:center;}
+  .card-preview{order:-1;max-width:460px;margin-inline:auto;}
+  .shop-lamp{opacity:.3;width:clamp(64px,18vw,104px);}
+
+  /* Naivedya: image on top, text below */
+  .nv-card{grid-template-columns:1fr;text-align:center;}
+  .nv-media{max-width:420px;margin-inline:auto;}
+  .nv-copy{margin-inline:auto;}
+  .nv-actions{justify-content:center;}
+}
+
+/* ── large phones ── */
+@media (max-width:640px){
+  .chapter,.traditions,.interactive,.wishmaker,.shop{
+    padding-left:1rem;padding-right:1rem;
+  }
+  .hero{padding:4.5rem 1rem 6.5rem;}
+  .hero-pookalam{width:min(56vw,220px);}
+  /* ഓണാശംസകൾ is one unbreakable word — size it off vw so it always fits */
+  .ml-title{font-size:clamp(1.9rem,11vw,4rem);}
+  .hero-lede{font-size:.95rem;}
+  .hero-wave{height:70px;}
+
+  /* two-up cards read better than one giant column */
+  .trad-grid{grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:1rem;}
+  .trad{padding:1.1rem;}
+  .trad h3{font-size:1.25rem;}
+
+  .ch-art{max-width:min(100%,380px);}
+  blockquote.ml{font-size:1.08rem;padding:1rem 1.1rem;}
+  .pull{font-size:1.05rem;}
+
+  .card-body{padding:1.6rem 1.25rem;}
+  .card-motif{width:74px;}
+
+  .offer{padding:1.25rem 1rem;}
+  .offer-meta{flex-direction:column;gap:.5rem;align-items:center;}
+
+  .wish-actions{flex-direction:column;align-items:stretch;}
+  .wish-actions .btn-primary,.wish-actions .btn-ghost{width:100%;}
+
+  .naivedya{padding-left:1rem;padding-right:1rem;}
+  .nv-card{padding:1.25rem 1.1rem;border-radius:18px;}
+  .nv-actions{flex-direction:column;align-items:stretch;}
+  .nv-link,.nv-call{width:100%;justify-content:center;}
+}
+
+/* ── standard phones ── */
+@media (max-width:480px){
+  .hero{padding-top:4rem;}
+  .mh-name{font-size:.92rem;letter-spacing:.2em;text-indent:.2em;}
+  .mh-place{font-size:.74rem;}
+  .hero-pookalam{width:min(60vw,190px);}
+  .scroll-cue{font-size:.75rem;letter-spacing:.12em;}
+
+  .trad-grid{grid-template-columns:1fr;}
+  .trad-art{padding:.65rem;}
+
+  .ch-num{font-size:.68rem;letter-spacing:.16em;gap:.5rem;}
+  .ch-num span{font-size:1.15rem;padding-right:.5rem;}
+
+  .pook-canvas-wrap{max-width:300px;}
+  .count{font-size:3rem;}
+
+  .nv-badge{font-size:.64rem;letter-spacing:.1em;}
+  .foot{padding:2.5rem 1rem 2.25rem;}
+}
+
+/* ── very small phones (Galaxy Fold, older SE) ── */
+@media (max-width:360px){
+  body{font-size:15px;}
+  .ml-title{font-size:clamp(1.4rem,10.5vw,2.4rem);}
+  .hero-pookalam{width:min(58vw,160px);}
+  .mh-name{font-size:.8rem;letter-spacing:.15em;text-indent:.15em;}
+  .mh-orn{gap:.6rem;margin-bottom:.6rem;}
+  .mh-place{font-size:.7rem;letter-spacing:.08em;}
+  .section-head h2,.ch-text h2{font-size:1.55rem;}
+  .card-body{padding:1.35rem 1rem;}
+  .card-ml{font-size:1.2rem;}
+  .pook-canvas-wrap{max-width:260px;}
+  .btn-primary,.btn-ghost{padding:.75rem 1.1rem;font-size:.88rem;}
+  .offer-text,.nv-copy{font-size:.88rem;}
+  .naivedya h2{font-size:1.45rem;}
+  .nv-link,.nv-call{font-size:.88rem;padding:.7rem 1.1rem;}
+}
+
+/* ── phones held sideways: the tall hero would scroll off ── */
+@media (max-height:540px) and (orientation:landscape){
+  .hero{min-height:auto;padding:3.5rem 1.25rem 4.5rem;}
+  .hero-pookalam{width:min(26vw,140px);margin-bottom:.75rem;}
+  .ml-title{font-size:clamp(1.8rem,7vw,3rem);}
+  .hero-sub{font-size:1rem;margin-bottom:.5rem;}
+  .hero-lede{font-size:.85rem;}
+  .hero-lede br{display:none;}
+  .masthead{margin-bottom:1rem;}
+  .scroll-cue{margin-top:.9rem;}
+  .hero-wave{height:56px;}
+}
+
+/* ── wide desktops: stop the text from stretching ── */
+@media (min-width:1500px){
+  .ch-wrap{max-width:1200px;}
+  .trad-grid{max-width:1200px;}
+}
+
+/* touch devices: hover lifts are pointless and cause sticky states */
+@media (hover:none){
+  .trad:hover{transform:none;box-shadow:none;}
+  .trad:hover .trad-art img{transform:none;}
+  .card:hover{transform:none;}
+  .btn-primary:hover,.btn-ghost:hover,.nv-link:hover,.nv-call:hover{transform:none;}
+}
+
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto;}
+  *,*::before,*::after{animation-duration:.001ms !important;animation-iteration-count:1 !important;transition-duration:.001ms !important;}
+  .js .reveal{opacity:1;transform:none;}
+  #petals{display:none;}
+}
+
+@media print{
+  #petals,.scroll-cue,.wish-actions,.pook-side .btn-ghost,#addFlower{display:none;}
+  body{background:#fff;}
+}
