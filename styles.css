@@ -228,7 +228,33 @@ p{margin:0 0 1.1em;}
 .scroll-cue:hover{color:var(--marigold);}
 @keyframes bob{50%{transform:translateY(6px);}}
 
-.hero-wave{position:absolute;bottom:-1px;left:0;width:100%;height:110px;z-index:3;}
+/* Three wave layers drifting at different speeds. Each svg is 200% wide and
+   holds two identical tiles, so translating it by -50% lands on an identical
+   shape — the loop has no seam. Front layer is the offers section's own green,
+   so the hero pours straight into it. */
+.hero-wave{
+  position:absolute;bottom:-1px;left:0;
+  width:100%;height:clamp(70px,10vw,130px);
+  z-index:3;overflow:hidden;pointer-events:none;
+}
+.hero-wave .wv{
+  position:absolute;bottom:0;left:0;
+  width:200%;
+  max-width:none;          /* beats the global img,svg{max-width:100%} */
+  height:100%;
+  will-change:transform;
+  animation-name:waveDrift;
+  animation-timing-function:linear;
+  animation-iteration-count:infinite;
+}
+@keyframes waveDrift{
+  from{transform:translateX(0);}
+  to{transform:translateX(-50%);}
+}
+/* scoped to match .hero-wave .wv specificity, or the shorthand above wins */
+.hero-wave .wv-back{animation-duration:21s;opacity:.45;}
+.hero-wave .wv-mid{animation-duration:14s;animation-direction:reverse;opacity:.75;}
+.hero-wave .wv-front{animation-duration:9.5s;}
 
 /* ═══════════ CHAPTERS ═══════════ */
 .chapter{padding:clamp(4.5rem,10vw,8rem) 1.25rem;position:relative;}
@@ -564,14 +590,13 @@ blockquote.ml cite{
     linear-gradient(180deg,var(--leaf-deep) 0%,#123F2F 100%);
   color:var(--cream-2);
 }
-/* kasavu hairlines framing the offer board, top and bottom */
-.offers::before,.offers::after{
-  content:"";position:absolute;left:0;right:0;height:3px;
+/* kasavu hairline closing the offer board. No rule on top: the hero wave
+   curves into this section, and a straight line across it looks like a slip. */
+.offers::after{
+  content:"";position:absolute;left:0;right:0;bottom:0;height:3px;
   background:linear-gradient(90deg,var(--gold),#EBD9A8 25%,var(--gold) 50%,#EBD9A8 75%,var(--gold));
   opacity:.55;
 }
-.offers::before{top:0;}
-.offers::after{bottom:0;}
 .offers .eyebrow{color:var(--marigold);}
 .offers .section-head h2{color:var(--cream);}
 .offers .lede{color:rgba(255,243,214,.72);}
@@ -618,178 +643,137 @@ blockquote.ml cite{
 .offer-card.has-photo .oc-media{opacity:1;}
 .offer-card.has-photo:hover .oc-media{transform:scale(1.06);}
 
+/* ── The card: a red festival price tag ──
+   Deep temple red with gold foil edges. The price sits on a gold banner
+   that runs the full width, like a tag tied to the goods.               */
 .offer-card{
+  --ocp:1.15rem;            /* frame padding; the price banner cancels it */
   position:relative;
-  padding:0;
-  background:
-    repeating-linear-gradient(90deg,rgba(201,162,39,.055) 0 1px,transparent 1px 14px),
-    linear-gradient(180deg,#FFFDF6 0%,#FBEFD5 100%);
-  border:1px solid var(--gold-soft);
-  border-radius:18px;
-  box-shadow:0 16px 34px -18px rgba(0,0,0,.55);
+  display:flex;flex-direction:column;
   overflow:hidden;
-  transition:transform .35s cubic-bezier(.22,1,.36,1),box-shadow .35s;
+  border-radius:16px;
+  background:
+    radial-gradient(ellipse 120% 70% at 50% 0%,rgba(255,150,80,.28),transparent 60%),
+    linear-gradient(165deg,#A8261F 0%,#8C1D18 38%,#6E1611 70%,#4E0F0B 100%);
+  border:1px solid rgba(201,162,39,.55);
+  box-shadow:0 18px 38px -18px rgba(0,0,0,.75);
+  transition:transform .35s cubic-bezier(.22,1,.36,1),box-shadow .35s,border-color .35s;
 }
-.offer-card:hover{transform:translateY(-7px);box-shadow:0 28px 50px -18px rgba(0,0,0,.7);}
+.offer-card:hover{
+  transform:translateY(-8px);
+  border-color:rgba(242,201,107,.95);
+  box-shadow:0 30px 54px -18px rgba(0,0,0,.85);
+}
 
-/* kasavu band across the top of every card */
+/* gold foil hairline just inside the edge */
 .offer-card::before{
-  content:"";position:absolute;top:0;left:0;right:0;height:7px;z-index:3;
-  background:linear-gradient(90deg,var(--gold),#EBD9A8 30%,var(--gold) 60%,#EBD9A8);
+  content:"";position:absolute;inset:7px;z-index:2;
+  border:1px solid rgba(235,217,168,.34);
+  border-radius:10px;pointer-events:none;
 }
-/* a slow shine that crosses the card on hover */
+/* slow shine across the card on hover */
 .offer-card::after{
-  content:"";position:absolute;top:0;bottom:0;left:-60%;width:45%;z-index:2;
-  background:linear-gradient(100deg,transparent,rgba(255,255,255,.75),transparent);
+  content:"";position:absolute;top:0;bottom:0;left:-60%;width:42%;z-index:3;
+  background:linear-gradient(100deg,transparent,rgba(255,225,160,.30),transparent);
   transform:skewX(-18deg);
-  transition:left .75s cubic-bezier(.4,0,.2,1);
+  transition:left .8s cubic-bezier(.4,0,.2,1);
   pointer-events:none;
 }
-.offer-card:hover::after{left:120%;}
+.offer-card:hover::after{left:130%;}
 
-/* inset hairline, like a printed certificate */
 .oc-frame{
   position:relative;z-index:1;
-  height:100%;
+  flex:1;
   display:flex;flex-direction:column;align-items:center;text-align:center;
-  margin:14px 12px 12px;
-  padding:1.15rem .85rem 1.1rem;
-  border:1px solid rgba(201,162,39,.42);
-  border-radius:12px;
+  padding:1.9rem var(--ocp) var(--ocp);
+}
+
+/* small gold seal at the top of every tag */
+.oc-frame::before{
+  content:"";
+  width:9px;height:9px;flex:none;
+  background:var(--gold);transform:rotate(45deg);
+  box-shadow:0 0 0 4px rgba(201,162,39,.22),0 0 12px rgba(242,201,107,.7);
+  margin-bottom:1rem;
 }
 
 .oc-ml{
   font-family:var(--font-ml);
-  font-size:1rem;line-height:1.3;color:var(--red);
-  margin:0 0 .15rem;
-  /* some names run to two lines and some to one — reserve both so the
-     dividers and prices line up across the row */
+  font-size:1.05rem;line-height:1.3;
+  color:#FFD98E;
+  margin:0 0 .2rem;
   min-height:2.6em;
   display:flex;align-items:center;justify-content:center;
+  text-shadow:0 2px 8px rgba(0,0,0,.45);
 }
 .offer-card h3{
   font-family:var(--font-display);
-  font-size:.82rem;font-weight:600;
-  letter-spacing:.16em;text-transform:uppercase;
-  color:var(--ink-soft);
-  margin:0;text-indent:.16em;
+  font-size:.78rem;font-weight:600;
+  letter-spacing:.2em;text-transform:uppercase;
+  color:rgba(255,243,214,.66);
+  margin:0 0 1.15rem;text-indent:.2em;
 }
 
-/* divider echoing the hero masthead */
-.oc-div{
-  display:flex;align-items:center;justify-content:center;gap:.5rem;
-  margin:.75rem 0 .9rem;width:100%;
+/* the gold price banner, edge to edge */
+.oc-price,.oc-variants{
+  margin:auto 0 0;
+  width:calc(100% + (var(--ocp) * 2));
+  margin-left:calc(var(--ocp) * -1);margin-right:calc(var(--ocp) * -1);
 }
-.oc-div::before,.oc-div::after{
-  content:"";height:1px;flex:1;max-width:46px;
-}
-.oc-div::before{background:linear-gradient(90deg,transparent,var(--gold));}
-.oc-div::after{background:linear-gradient(90deg,var(--gold),transparent);}
-.oc-div span{
-  width:5px;height:5px;flex:none;
-  background:var(--gold);transform:rotate(45deg);
-}
-
 .oc-price{
   position:relative;
   font-family:var(--font-display);
-  font-size:clamp(2.2rem,4.6vw,2.85rem);
+  font-size:clamp(2.1rem,4.4vw,2.6rem);
   font-weight:700;line-height:1;
-  color:var(--leaf-deep);
-  margin:auto 0 .55rem;
+  color:#4E0F0B;
+  padding:.7rem .5rem .55rem;
+  background:linear-gradient(180deg,#FBE0A4 0%,#F2C96B 45%,#DFA939 100%);
+  border-top:1px solid rgba(255,246,220,.85);
   font-variant-numeric:tabular-nums;
   letter-spacing:-.01em;
 }
-/* warm pool of light behind the number */
-.oc-price::before{
-  content:"";position:absolute;left:50%;top:50%;
-  width:150%;height:210%;transform:translate(-50%,-50%);
-  background:radial-gradient(ellipse,rgba(242,169,59,.30),transparent 68%);
-  z-index:-1;pointer-events:none;
-}
-.oc-cur{font-size:.58em;vertical-align:.16em;margin-right:.08em;color:var(--red);font-weight:600;}
+.oc-cur{font-size:.56em;vertical-align:.18em;margin-right:.06em;color:#8C1D18;font-weight:600;}
 
 .oc-only{
-  font-size:.64rem;letter-spacing:.24em;text-transform:uppercase;
-  color:#6E5312;font-weight:700;margin:0;
-  padding:.28rem .75rem;
-  background:linear-gradient(180deg,rgba(242,169,59,.30),rgba(201,162,39,.22));
-  border:1px solid rgba(201,162,39,.55);
-  border-radius:999px;
-  text-indent:.24em;
+  width:calc(100% + (var(--ocp) * 2));
+  margin:0 calc(var(--ocp) * -1) calc(var(--ocp) * -1);
+  padding:.42rem;
+  font-size:.62rem;letter-spacing:.28em;text-transform:uppercase;
+  font-weight:700;color:#4E0F0B;text-indent:.28em;
+  background:linear-gradient(180deg,#DFA939,#C9922B);
+  border-top:1px solid rgba(78,15,11,.18);
 }
 
-/* the cooker card carries two sizes instead of one price */
+/* the cooker tag carries two sizes on the same banner */
 .oc-variants{
-  list-style:none;margin:auto 0 0;padding:0;
-  width:100%;display:flex;flex-direction:column;gap:.45rem;
+  list-style:none;padding:0;
+  display:flex;flex-direction:column;
+  background:linear-gradient(180deg,#FBE0A4 0%,#F2C96B 55%,#DFA939 100%);
+  border-top:1px solid rgba(255,246,220,.85);
 }
 .oc-variants li{
-  display:flex;align-items:center;justify-content:space-between;
-  gap:.6rem;
-  padding:.5rem .7rem;
-  background:linear-gradient(180deg,rgba(255,255,255,.75),rgba(242,169,59,.12));
-  border:1px solid rgba(201,162,39,.45);
-  border-radius:10px;
+  display:flex;align-items:center;justify-content:center;gap:.7rem;
+  padding:.5rem .6rem;
 }
+.oc-variants li+li{border-top:1px dashed rgba(78,15,11,.3);}
 .oc-size{
-  font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;
-  color:#fff;font-weight:700;
-  background:var(--leaf);
-  padding:.2rem .5rem;border-radius:6px;
+  font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;
+  color:#FFF3D6;font-weight:700;
+  background:#6E1611;
+  padding:.22rem .55rem;border-radius:5px;
   flex:none;
 }
 .oc-variants b{
   font-family:var(--font-display);
-  font-size:1.55rem;line-height:1;color:var(--leaf-deep);
+  font-size:1.6rem;line-height:1;color:#4E0F0B;
   font-variant-numeric:tabular-nums;
 }
+.oc-variants .oc-cur{color:#8C1D18;}
 
-/* a different accent per card so four cards do not read as wallpaper */
-.offer-card:nth-child(2) .oc-ml{color:#0E5C3C;}
-.offer-card:nth-child(3) .oc-ml{color:#9A5B12;}
-.offer-card:nth-child(4) .oc-ml{color:#7A2E7E;}
-
-/* ── light-text mode, used only when a photo is behind the card ── */
-.offer-card.has-photo{
-  border-color:rgba(201,162,39,.75);
-  min-height:300px;
-}
-.offer-card.has-photo .oc-frame{
-  border-color:rgba(235,217,168,.42);
-  justify-content:flex-end;
-}
-.offer-card.has-photo .oc-ml,
-.offer-card.has-photo:nth-child(n) .oc-ml{
-  color:#FFD98E;
-  text-shadow:0 2px 10px rgba(0,0,0,.7);
-}
-.offer-card.has-photo h3{
-  color:rgba(255,248,236,.9);
-  text-shadow:0 2px 10px rgba(0,0,0,.7);
-}
-.offer-card.has-photo .oc-price{
-  color:var(--cream);
-  text-shadow:0 3px 16px rgba(0,0,0,.65);
-}
-.offer-card.has-photo .oc-price::before{
-  background:radial-gradient(ellipse,rgba(255,190,80,.34),transparent 68%);
-}
-.offer-card.has-photo .oc-cur{color:#FFB86B;}
-.offer-card.has-photo .oc-only{
-  color:#2A1A12;
-  background:linear-gradient(180deg,#F7C86A,#E0A93B);
-  border-color:rgba(255,240,200,.7);
-}
-.offer-card.has-photo .oc-variants li{
-  background:rgba(20,8,4,.5);
-  border-color:rgba(235,217,168,.4);
-  backdrop-filter:blur(3px);
-}
-.offer-card.has-photo .oc-variants b{color:var(--cream);}
-.offer-card.has-photo .oc-div::before{background:linear-gradient(90deg,transparent,#EBD9A8);}
-.offer-card.has-photo .oc-div::after{background:linear-gradient(90deg,#EBD9A8,transparent);}
-.offer-card.has-photo .oc-div span{background:#EBD9A8;}
+/* ── photo mode: the tag becomes a window onto the product ── */
+.offer-card.has-photo{min-height:320px;}
+.offer-card.has-photo .oc-ml{color:#FFE3A8;}
+.offer-card.has-photo h3{color:rgba(255,248,236,.82);text-shadow:0 2px 8px rgba(0,0,0,.7);}
 
 .offer-foot{
   max-width:1120px;margin:1.8rem auto 0;text-align:center;
@@ -862,8 +846,6 @@ blockquote.ml cite{
 
 @keyframes spin{to{transform:rotate(360deg);}}
 
-.float{animation:floaty 7s ease-in-out infinite;}
-@keyframes floaty{50%{transform:translateY(-14px);}}
 
 /* ═══════════════════════════════════════════════
    RESPONSIVE
@@ -894,7 +876,7 @@ h1,h2,h3,p,blockquote,li,a{overflow-wrap:break-word;}
 }
 @media (max-width:460px){
   .offer-grid{grid-template-columns:minmax(0,1fr);gap:1rem;}
-  .offer-card{padding:1.6rem 1rem 1.3rem;}
+  .offer-card{--ocp:.9rem;}
   /* one per row: price sits beside the name rather than under it */
   .oc-price{font-size:2.3rem;}
 }
@@ -1031,6 +1013,8 @@ h1,h2,h3,p,blockquote,li,a{overflow-wrap:break-word;}
   *,*::before,*::after{animation-duration:.001ms !important;animation-iteration-count:1 !important;transition-duration:.001ms !important;}
   .js .reveal{opacity:1;transform:none;}
   #petals{display:none;}
+  /* the wave keyframe ends mid-tile, so freeze it at the start instead */
+  .hero-wave .wv{animation:none !important;transform:none !important;}
 }
 
 @media print{

@@ -47,19 +47,18 @@ const FALLBACK_COLORS = ['#F2A93B', '#E8871E', '#8C1D18', '#C43C2E', '#7FB069', 
 (function offerPhotos() {
   document.querySelectorAll('.offer-card').forEach(card => {
     const img = card.querySelector('.oc-media img');
-    if (!img) return;
-    const show = () => card.classList.add('has-photo');
-    const hide = () => card.classList.remove('has-photo');
+    const src = img && img.dataset.src;
+    if (!src) return;
 
-    // eager probe: .oc-media images are lazy, so they would otherwise not
-    // report until scrolled to
+    // The path sits in data-src, not src. Probe it first and only attach the
+    // real src once it loads: a card with no photo then costs one request
+    // instead of a request plus a broken <img>, and logs no console error.
     const probe = new Image();
-    probe.onload = show;
-    probe.onerror = hide;
-    probe.src = img.getAttribute('src');
-
-    img.addEventListener('load', show);
-    img.addEventListener('error', hide);
+    probe.onload = () => {
+      img.src = src;
+      card.classList.add('has-photo');
+    };
+    probe.src = src;
   });
 })();
 
