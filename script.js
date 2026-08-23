@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════
-   ONAM · Nithya Electronics, Kanhangad
+   ONAM · Nitya Electronics, Kanhangad
 
    All artwork is transparent PNG in /assets.
    Every image degrades gracefully: if a file is not
@@ -38,6 +38,28 @@ const FALLBACK_COLORS = ['#F2A93B', '#E8871E', '#8C1D18', '#C43C2E', '#7FB069', 
     probe.onerror = missing;
     probe.onload = found;
     probe.src = img.currentSrc || img.src;
+  });
+})();
+
+/* ─────────── 0b. Optional photo behind each offer card ───────────
+   assets/offer1.png … offer4.png. Drop a file in and that card switches
+   to photo mode; leave it out and the cream kasavu card stands as-is.   */
+(function offerPhotos() {
+  document.querySelectorAll('.offer-card').forEach(card => {
+    const img = card.querySelector('.oc-media img');
+    if (!img) return;
+    const show = () => card.classList.add('has-photo');
+    const hide = () => card.classList.remove('has-photo');
+
+    // eager probe: .oc-media images are lazy, so they would otherwise not
+    // report until scrolled to
+    const probe = new Image();
+    probe.onload = show;
+    probe.onerror = hide;
+    probe.src = img.getAttribute('src');
+
+    img.addEventListener('load', show);
+    img.addEventListener('error', hide);
   });
 })();
 
@@ -350,7 +372,7 @@ const flowerImages = (() => {
       WISHES[+pick.value] || WISHES[0],
       '',
       from ? `— ${from}` : '— with love',
-      'Nithya Electronics, Kanhangad'
+      'Nitya Electronics, Kanhangad'
     ].join('\n');
   }
 

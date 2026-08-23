@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════
-   ONAM · Nithya Electronics, Kanhangad
+   ONAM · Nitya Electronics, Kanhangad
    Art direction: transparent-background PNG cutouts
    floating on colour, no boxes or frames.
    ═══════════════════════════════════════════════ */
@@ -551,6 +551,253 @@ blockquote.ml cite{
   padding-top:.9rem;border-top:1px solid var(--gold-soft);
 }
 
+/* ═══════════════════════════════════════════════
+   ONAM OFFERS — cream-and-gold price cards on green,
+   set like kasavu cloth. Typographic, no product art.
+   ═══════════════════════════════════════════════ */
+.offers{
+  position:relative;
+  padding:clamp(4rem,9vw,7rem) 1.25rem;
+  background:
+    radial-gradient(circle at 12% 12%,rgba(242,169,59,.16),transparent 42%),
+    radial-gradient(circle at 88% 85%,rgba(201,162,39,.14),transparent 45%),
+    linear-gradient(180deg,var(--leaf-deep) 0%,#123F2F 100%);
+  color:var(--cream-2);
+}
+/* kasavu hairlines framing the offer board, top and bottom */
+.offers::before,.offers::after{
+  content:"";position:absolute;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,var(--gold),#EBD9A8 25%,var(--gold) 50%,#EBD9A8 75%,var(--gold));
+  opacity:.55;
+}
+.offers::before{top:0;}
+.offers::after{bottom:0;}
+.offers .eyebrow{color:var(--marigold);}
+.offers .section-head h2{color:var(--cream);}
+.offers .lede{color:rgba(255,243,214,.72);}
+
+/* lozenge divider under a section heading, matching the hero masthead */
+.head-orn{
+  display:flex;align-items:center;justify-content:center;gap:.7rem;
+  margin:-.15rem 0 1rem;
+}
+.head-orn::before,.head-orn::after{
+  content:"";height:1px;width:clamp(34px,9vw,76px);
+}
+.head-orn::before{background:linear-gradient(90deg,transparent,var(--gold));}
+.head-orn::after{background:linear-gradient(90deg,var(--gold),transparent);}
+.head-orn span{
+  width:6px;height:6px;flex:none;
+  background:var(--gold);transform:rotate(45deg);
+}
+
+.offer-grid{
+  max-width:1120px;margin-inline:auto;
+  display:grid;grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:1.25rem;align-items:stretch;
+}
+
+/* ── optional photo behind a card (assets/offer1.png … offer4.png) ──
+   Hidden until the file actually loads, so a missing photo simply leaves
+   the cream kasavu card design instead of a broken box. */
+.oc-media{
+  position:absolute;inset:0;z-index:0;
+  opacity:0;transition:opacity .5s ease,transform .5s cubic-bezier(.22,1,.36,1);
+}
+.oc-media img{
+  width:100%;height:100%;object-fit:cover;display:block;
+}
+/* scrim so the price stays readable over any photo */
+.oc-media::after{
+  content:"";position:absolute;inset:0;
+  background:linear-gradient(180deg,
+    rgba(24,9,4,.30) 0%,
+    rgba(24,9,4,.52) 42%,
+    rgba(24,9,4,.86) 100%);
+}
+.offer-card.has-photo .oc-media{opacity:1;}
+.offer-card.has-photo:hover .oc-media{transform:scale(1.06);}
+
+.offer-card{
+  position:relative;
+  padding:0;
+  background:
+    repeating-linear-gradient(90deg,rgba(201,162,39,.055) 0 1px,transparent 1px 14px),
+    linear-gradient(180deg,#FFFDF6 0%,#FBEFD5 100%);
+  border:1px solid var(--gold-soft);
+  border-radius:18px;
+  box-shadow:0 16px 34px -18px rgba(0,0,0,.55);
+  overflow:hidden;
+  transition:transform .35s cubic-bezier(.22,1,.36,1),box-shadow .35s;
+}
+.offer-card:hover{transform:translateY(-7px);box-shadow:0 28px 50px -18px rgba(0,0,0,.7);}
+
+/* kasavu band across the top of every card */
+.offer-card::before{
+  content:"";position:absolute;top:0;left:0;right:0;height:7px;z-index:3;
+  background:linear-gradient(90deg,var(--gold),#EBD9A8 30%,var(--gold) 60%,#EBD9A8);
+}
+/* a slow shine that crosses the card on hover */
+.offer-card::after{
+  content:"";position:absolute;top:0;bottom:0;left:-60%;width:45%;z-index:2;
+  background:linear-gradient(100deg,transparent,rgba(255,255,255,.75),transparent);
+  transform:skewX(-18deg);
+  transition:left .75s cubic-bezier(.4,0,.2,1);
+  pointer-events:none;
+}
+.offer-card:hover::after{left:120%;}
+
+/* inset hairline, like a printed certificate */
+.oc-frame{
+  position:relative;z-index:1;
+  height:100%;
+  display:flex;flex-direction:column;align-items:center;text-align:center;
+  margin:14px 12px 12px;
+  padding:1.15rem .85rem 1.1rem;
+  border:1px solid rgba(201,162,39,.42);
+  border-radius:12px;
+}
+
+.oc-ml{
+  font-family:var(--font-ml);
+  font-size:1rem;line-height:1.3;color:var(--red);
+  margin:0 0 .15rem;
+  /* some names run to two lines and some to one — reserve both so the
+     dividers and prices line up across the row */
+  min-height:2.6em;
+  display:flex;align-items:center;justify-content:center;
+}
+.offer-card h3{
+  font-family:var(--font-display);
+  font-size:.82rem;font-weight:600;
+  letter-spacing:.16em;text-transform:uppercase;
+  color:var(--ink-soft);
+  margin:0;text-indent:.16em;
+}
+
+/* divider echoing the hero masthead */
+.oc-div{
+  display:flex;align-items:center;justify-content:center;gap:.5rem;
+  margin:.75rem 0 .9rem;width:100%;
+}
+.oc-div::before,.oc-div::after{
+  content:"";height:1px;flex:1;max-width:46px;
+}
+.oc-div::before{background:linear-gradient(90deg,transparent,var(--gold));}
+.oc-div::after{background:linear-gradient(90deg,var(--gold),transparent);}
+.oc-div span{
+  width:5px;height:5px;flex:none;
+  background:var(--gold);transform:rotate(45deg);
+}
+
+.oc-price{
+  position:relative;
+  font-family:var(--font-display);
+  font-size:clamp(2.2rem,4.6vw,2.85rem);
+  font-weight:700;line-height:1;
+  color:var(--leaf-deep);
+  margin:auto 0 .55rem;
+  font-variant-numeric:tabular-nums;
+  letter-spacing:-.01em;
+}
+/* warm pool of light behind the number */
+.oc-price::before{
+  content:"";position:absolute;left:50%;top:50%;
+  width:150%;height:210%;transform:translate(-50%,-50%);
+  background:radial-gradient(ellipse,rgba(242,169,59,.30),transparent 68%);
+  z-index:-1;pointer-events:none;
+}
+.oc-cur{font-size:.58em;vertical-align:.16em;margin-right:.08em;color:var(--red);font-weight:600;}
+
+.oc-only{
+  font-size:.64rem;letter-spacing:.24em;text-transform:uppercase;
+  color:#6E5312;font-weight:700;margin:0;
+  padding:.28rem .75rem;
+  background:linear-gradient(180deg,rgba(242,169,59,.30),rgba(201,162,39,.22));
+  border:1px solid rgba(201,162,39,.55);
+  border-radius:999px;
+  text-indent:.24em;
+}
+
+/* the cooker card carries two sizes instead of one price */
+.oc-variants{
+  list-style:none;margin:auto 0 0;padding:0;
+  width:100%;display:flex;flex-direction:column;gap:.45rem;
+}
+.oc-variants li{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:.6rem;
+  padding:.5rem .7rem;
+  background:linear-gradient(180deg,rgba(255,255,255,.75),rgba(242,169,59,.12));
+  border:1px solid rgba(201,162,39,.45);
+  border-radius:10px;
+}
+.oc-size{
+  font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;
+  color:#fff;font-weight:700;
+  background:var(--leaf);
+  padding:.2rem .5rem;border-radius:6px;
+  flex:none;
+}
+.oc-variants b{
+  font-family:var(--font-display);
+  font-size:1.55rem;line-height:1;color:var(--leaf-deep);
+  font-variant-numeric:tabular-nums;
+}
+
+/* a different accent per card so four cards do not read as wallpaper */
+.offer-card:nth-child(2) .oc-ml{color:#0E5C3C;}
+.offer-card:nth-child(3) .oc-ml{color:#9A5B12;}
+.offer-card:nth-child(4) .oc-ml{color:#7A2E7E;}
+
+/* ── light-text mode, used only when a photo is behind the card ── */
+.offer-card.has-photo{
+  border-color:rgba(201,162,39,.75);
+  min-height:300px;
+}
+.offer-card.has-photo .oc-frame{
+  border-color:rgba(235,217,168,.42);
+  justify-content:flex-end;
+}
+.offer-card.has-photo .oc-ml,
+.offer-card.has-photo:nth-child(n) .oc-ml{
+  color:#FFD98E;
+  text-shadow:0 2px 10px rgba(0,0,0,.7);
+}
+.offer-card.has-photo h3{
+  color:rgba(255,248,236,.9);
+  text-shadow:0 2px 10px rgba(0,0,0,.7);
+}
+.offer-card.has-photo .oc-price{
+  color:var(--cream);
+  text-shadow:0 3px 16px rgba(0,0,0,.65);
+}
+.offer-card.has-photo .oc-price::before{
+  background:radial-gradient(ellipse,rgba(255,190,80,.34),transparent 68%);
+}
+.offer-card.has-photo .oc-cur{color:#FFB86B;}
+.offer-card.has-photo .oc-only{
+  color:#2A1A12;
+  background:linear-gradient(180deg,#F7C86A,#E0A93B);
+  border-color:rgba(255,240,200,.7);
+}
+.offer-card.has-photo .oc-variants li{
+  background:rgba(20,8,4,.5);
+  border-color:rgba(235,217,168,.4);
+  backdrop-filter:blur(3px);
+}
+.offer-card.has-photo .oc-variants b{color:var(--cream);}
+.offer-card.has-photo .oc-div::before{background:linear-gradient(90deg,transparent,#EBD9A8);}
+.offer-card.has-photo .oc-div::after{background:linear-gradient(90deg,#EBD9A8,transparent);}
+.offer-card.has-photo .oc-div span{background:#EBD9A8;}
+
+.offer-foot{
+  max-width:1120px;margin:1.8rem auto 0;text-align:center;
+  font-size:.88rem;color:rgba(255,243,214,.66);
+}
+.offer-foot a{color:var(--marigold);text-decoration:none;font-weight:700;}
+.offer-foot a:hover{text-decoration:underline;}
+
 /* ═══════════ SHOP ═══════════ */
 .shop{
   position:relative;overflow:hidden;
@@ -585,6 +832,7 @@ blockquote.ml cite{
 }
 .offer-tag{font-family:var(--font-ml);font-size:1.05rem;color:var(--marigold);margin-bottom:.4rem;}
 .offer-text{color:var(--cream);font-size:1.05rem;margin-bottom:1.1rem;}
+.offer-text a{color:var(--marigold);font-weight:700;}
 .offer-meta{
   display:flex;flex-wrap:wrap;gap:.6rem 1.4rem;justify-content:center;
   font-size:.88rem;color:rgba(255,243,214,.75);
@@ -640,6 +888,17 @@ h1,h2,h3,p,blockquote,li,a{overflow-wrap:break-word;}
   .trad-grid{grid-template-columns:minmax(0,1fr);}
 }
 
+/* ── offer cards: 4 → 2 → 1 ── */
+@media (max-width:1000px){
+  .offer-grid{grid-template-columns:repeat(2,minmax(0,1fr));}
+}
+@media (max-width:460px){
+  .offer-grid{grid-template-columns:minmax(0,1fr);gap:1rem;}
+  .offer-card{padding:1.6rem 1rem 1.3rem;}
+  /* one per row: price sits beside the name rather than under it */
+  .oc-price{font-size:2.3rem;}
+}
+
 /* ── tablets and below: everything goes single column ── */
 @media (max-width:880px){
   .ch-wrap,.pook-stage,.wish-layout{grid-template-columns:1fr;}
@@ -666,7 +925,7 @@ h1,h2,h3,p,blockquote,li,a{overflow-wrap:break-word;}
 
 /* ── large phones ── */
 @media (max-width:640px){
-  .chapter,.traditions,.interactive,.wishmaker,.shop{
+  .chapter,.traditions,.interactive,.wishmaker,.shop,.offers{
     padding-left:1rem;padding-right:1rem;
   }
   .hero{padding:4.5rem 1rem 6.5rem;}
@@ -762,6 +1021,7 @@ h1,h2,h3,p,blockquote,li,a{overflow-wrap:break-word;}
 @media (hover:none){
   .trad:hover{transform:none;box-shadow:none;}
   .trad:hover .trad-art img{transform:none;}
+  .offer-card:hover{transform:none;}
   .card:hover{transform:none;}
   .btn-primary:hover,.btn-ghost:hover,.nv-link:hover,.nv-call:hover{transform:none;}
 }
