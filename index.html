@@ -150,7 +150,106 @@
   <p class="offer-foot">These are just a few. <strong>Many more offers across the store </strong>. <a href="#shop">Come and see us in Kanhangad →</a></p>
 </section>
 <!-- ▲▲ EDIT ▲▲ -->
+<!-- ═══════════ SHOP GREETING ═══════════ -->
+<section class="shop" id="shop">
+  <div class="shop-photo" aria-hidden="true">
+    <img src="assets/offer1b.jpg" loading="lazy" width="902" height="1600" alt="" />
+  </div>
 
+  <div class="shop-lamp left art-slot" data-file="nilavilakku.png" style="--ar:2/3" aria-hidden="true">
+    <img src="assets/nilavilakku.png" loading="lazy" width="500" height="750" alt="" />
+  </div>
+  <div class="shop-lamp right art-slot" data-file="nilavilakku.png" style="--ar:2/3" aria-hidden="true">
+    <img src="assets/nilavilakku.png" loading="lazy" width="500" height="750" alt="" />
+  </div>
+
+  <div class="shop-inner reveal">
+    <p class="eyebrow light">From all of us at</p>
+    <h2>Nitya Electronics, Kanhangad</h2>
+    <p class="shop-copy">
+      Year after year, you have walked in looking for the things that make your home better — 
+      from fans and mixer grinders to sewing machines and more.
+    </p>
+    <p class="shop-copy strong">
+      This Onam, from our family to yours: happiness that outlasts the sadya, and a year of good news.
+    </p>
+    <p class="ml-wish" lang="ml">ഏവർക്കും ഹൃദയം നിറഞ്ഞ ഓണാശംസകൾ 🌼</p>
+
+    <!-- ▼▼ EDIT: shop offer, phone and timings ▼▼ -->
+    <div class="offer">
+      <p class="offer-tag">ഓണം ഓഫർ · Onam Offer</p>
+      <p class="offer-text">Special festive discounts and Sales — <a href="#offers">see this Onam's prices</a>.</p>
+      <div class="offer-meta">
+        <span>📍 Kanhangad, Kasaragod</span>
+        <span>📞 +91 9447352287</span>
+        <span>🕘 9:00 to 7:00</span>
+      </div>
+    </div>
+    <!-- ▲▲ EDIT ▲▲ -->
+    <!-- ═══════════ NAIVEDYA · SADYA ORDER BAND ═══════════ -->
+<!-- ▼▼ EDIT: put Naivedya's real Zomato listing URL and phone number below ▼▼ -->
+<section class="naivedya" id="sadya-order" aria-labelledby="nv-head">
+  <div class="nv-card reveal">
+
+    <div class="nv-media" aria-hidden="true">
+      <div class="art-slot" data-file="trad-sadya.png" style="--ar:3/2">
+        <img src="assets/trad-sadya.png" loading="lazy" width="760" height="507" alt="" />
+      </div>
+    </div>
+
+    <div class="nv-body">
+      <p class="nv-badge"><span class="nv-dot"></span> 100% Pure Vegetarian</p>
+      <p class="nv-eyebrow">ഈ ഓണത്തിന് · This Onam</p>
+      <h2 id="nv-head">Let someone else cook the sadya</h2>
+      <p class="nv-copy">
+        Tasty, home-style pure veg food from <strong>Naivedya, Kanhangad</strong> —
+        Onam sadya and everyday favourites, made fresh and delivered hot.
+      </p>
+
+      <div class="nv-actions">
+        <a class="nv-link" href="https://www.zomato.com/" target="_blank" rel="noopener noreferrer">
+          <span class="nv-zo">Order on Zomato</span>
+          <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M7 17L17 7M17 7H8M17 7v9" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+        <a class="nv-call" href="tel:9567088239">
+          <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M6.6 10.8a15.1 15.1 0 006.6 6.6l2.2-2.2a1 1 0 011-.24 11.4 11.4 0 003.6.58 1 1 0 011 1V20a1 1 0 01-1 1A17 17 0 013 4a1 1 0 011-1h3.5a1 1 0 011 1c0 1.25.2 2.46.57 3.6a1 1 0 01-.25 1z" fill="currentColor"/></svg>
+          Call to order
+        </a>
+      </div>
+
+      <p class="nv-note">📍 Kanhangad, Kasaragod</p>
+    </div>
+
+  </div>
+</section>
+<!-- ▲▲ EDIT ▲▲ -->
+<!-- ═══════════ INTERACTIVE POOKALAM ═══════════ -->
+<section class="interactive" id="pookalam">
+  <div class="section-head reveal">
+    <p class="eyebrow">നിങ്ങളുടെ ഊഴം · Your turn</p>
+    <h2>Lay a flower on our pookalam</h2>
+    <p class="lede">Tap anywhere inside the circle. Every petal you add stays there — see how full you can make it.</p>
+  </div>
+
+  <div class="pook-stage reveal">
+    <div class="pook-holder">
+      <div class="pook-canvas-wrap" id="pookWrap">
+        <img class="pook-base" src="assets/pookalam-base.png" loading="lazy" width="900" height="900"
+             alt="An empty pookalam outline waiting for petals" />
+        <canvas id="pookCanvas" width="900" height="900"
+                aria-label="Tap to lay a flower on the pookalam" role="img"></canvas>
+      </div>
+      <button id="addFlower" class="btn-primary">🌼 Add a flower</button>
+    </div>
+
+    <div class="pook-side">
+      <p class="count-label">Flowers laid so far</p>
+      <p class="count" id="flowerCount">0</p>
+      <p class="count-note" id="countNote">Saved on this device, so your pookalam is still here when you come back.</p>
+      <button id="resetPookalam" class="btn-ghost">Start a fresh pookalam</button>
+    </div>
+  </div>
+</section>
 
 <!-- ═══════════ CHAPTER 1 ═══════════ -->
 <section class="chapter" id="story" data-chapter="1">
@@ -316,71 +415,8 @@
   </div>
 </section>
 
-<!-- ═══════════ NAIVEDYA · SADYA ORDER BAND ═══════════ -->
-<!-- ▼▼ EDIT: put Naivedya's real Zomato listing URL and phone number below ▼▼ -->
-<section class="naivedya" id="sadya-order" aria-labelledby="nv-head">
-  <div class="nv-card reveal">
 
-    <div class="nv-media" aria-hidden="true">
-      <div class="art-slot" data-file="trad-sadya.png" style="--ar:3/2">
-        <img src="assets/trad-sadya.png" loading="lazy" width="760" height="507" alt="" />
-      </div>
-    </div>
 
-    <div class="nv-body">
-      <p class="nv-badge"><span class="nv-dot"></span> 100% Pure Vegetarian</p>
-      <p class="nv-eyebrow">ഈ ഓണത്തിന് · This Onam</p>
-      <h2 id="nv-head">Let someone else cook the sadya</h2>
-      <p class="nv-copy">
-        Tasty, home-style pure veg food from <strong>Naivedya, Kanhangad</strong> —
-        Onam sadya and everyday favourites, made fresh and delivered hot.
-      </p>
-
-      <div class="nv-actions">
-        <a class="nv-link" href="https://www.zomato.com/" target="_blank" rel="noopener noreferrer">
-          <span class="nv-zo">Order on Zomato</span>
-          <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M7 17L17 7M17 7H8M17 7v9" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </a>
-        <a class="nv-call" href="tel:9567088239">
-          <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M6.6 10.8a15.1 15.1 0 006.6 6.6l2.2-2.2a1 1 0 011-.24 11.4 11.4 0 003.6.58 1 1 0 011 1V20a1 1 0 01-1 1A17 17 0 013 4a1 1 0 011-1h3.5a1 1 0 011 1c0 1.25.2 2.46.57 3.6a1 1 0 01-.25 1z" fill="currentColor"/></svg>
-          Call to order
-        </a>
-      </div>
-
-      <p class="nv-note">📍 Kanhangad, Kasaragod</p>
-    </div>
-
-  </div>
-</section>
-<!-- ▲▲ EDIT ▲▲ -->
-
-<!-- ═══════════ INTERACTIVE POOKALAM ═══════════ -->
-<section class="interactive" id="pookalam">
-  <div class="section-head reveal">
-    <p class="eyebrow">നിങ്ങളുടെ ഊഴം · Your turn</p>
-    <h2>Lay a flower on our pookalam</h2>
-    <p class="lede">Tap anywhere inside the circle. Every petal you add stays there — see how full you can make it.</p>
-  </div>
-
-  <div class="pook-stage reveal">
-    <div class="pook-holder">
-      <div class="pook-canvas-wrap" id="pookWrap">
-        <img class="pook-base" src="assets/pookalam-base.png" loading="lazy" width="900" height="900"
-             alt="An empty pookalam outline waiting for petals" />
-        <canvas id="pookCanvas" width="900" height="900"
-                aria-label="Tap to lay a flower on the pookalam" role="img"></canvas>
-      </div>
-      <button id="addFlower" class="btn-primary">🌼 Add a flower</button>
-    </div>
-
-    <div class="pook-side">
-      <p class="count-label">Flowers laid so far</p>
-      <p class="count" id="flowerCount">0</p>
-      <p class="count-note" id="countNote">Saved on this device, so your pookalam is still here when you come back.</p>
-      <button id="resetPookalam" class="btn-ghost">Start a fresh pookalam</button>
-    </div>
-  </div>
-</section>
 
 <!-- ═══════════ WISH CARD MAKER ═══════════ -->
 <section class="wishmaker" id="wish">
@@ -438,42 +474,7 @@
 
 <!-- ═══════════ ONAM OFFERS ═══════════ -->
 
-<!-- ═══════════ SHOP GREETING ═══════════ -->
-<section class="shop" id="shop">
-  <div class="shop-photo" aria-hidden="true">
-    <img src="assets/offer1b.jpg" loading="lazy" width="902" height="1600" alt="" />
-  </div>
 
-  <div class="shop-lamp left art-slot" data-file="nilavilakku.png" style="--ar:2/3" aria-hidden="true">
-    <img src="assets/nilavilakku.png" loading="lazy" width="500" height="750" alt="" />
-  </div>
-  <div class="shop-lamp right art-slot" data-file="nilavilakku.png" style="--ar:2/3" aria-hidden="true">
-    <img src="assets/nilavilakku.png" loading="lazy" width="500" height="750" alt="" />
-  </div>
-
-  <div class="shop-inner reveal">
-    <p class="eyebrow light">From all of us at</p>
-    <h2>Nitya Electronics, Kanhangad</h2>
-    <p class="shop-copy">
-      Year after year, you have walked in looking for the things that make your home better — 
-      from fans and mixer grinders to sewing machines and more.
-    </p>
-    <p class="shop-copy strong">
-      This Onam, from our family to yours: happiness that outlasts the sadya, and a year of good news.
-    </p>
-    <p class="ml-wish" lang="ml">ഏവർക്കും ഹൃദയം നിറഞ്ഞ ഓണാശംസകൾ 🌼</p>
-
-    <!-- ▼▼ EDIT: shop offer, phone and timings ▼▼ -->
-    <div class="offer">
-      <p class="offer-tag">ഓണം ഓഫർ · Onam Offer</p>
-      <p class="offer-text">Special festive discounts and Sales — <a href="#offers">see this Onam's prices</a>.</p>
-      <div class="offer-meta">
-        <span>📍 Kanhangad, Kasaragod</span>
-        <span>📞 +91 9447352287</span>
-        <span>🕘 9:00 to 7:00</span>
-      </div>
-    </div>
-    <!-- ▲▲ EDIT ▲▲ -->
   </div>
 </section>
 
@@ -483,6 +484,7 @@
   <div class="foot-kasavu" aria-hidden="true"></div>
   <p class="foot-ml" lang="ml">ഓണാശംസകൾ</p>
   <p class="foot-sub">Nitya Electronics · Kanhangad</p>
+  <p class="foot-sub">Naivedya · Kanhangad</p>
   <p class="foot-name">Designed & Developed by B Devpriya Nayak</p>
   <p class="foot-note">Wishing you and yours a beautiful Onam. <a href="#top">Back to the top ↑</a></p>
 </footer>
