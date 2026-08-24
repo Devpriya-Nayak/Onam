@@ -46,19 +46,24 @@ const FALLBACK_COLORS = ['#F2A93B', '#E8871E', '#8C1D18', '#C43C2E', '#7FB069', 
    to photo mode; leave it out and the cream kasavu card stands as-is.   */
 (function offerPhotos() {
   document.querySelectorAll('.offer-card').forEach(card => {
-    const img = card.querySelector('.oc-media img');
-    const src = img && img.dataset.src;
-    if (!src) return;
+    const imgs = [...card.querySelectorAll('.oc-media img')].filter(i => i.dataset.src);
+    if (!imgs.length) return;
 
-    // The path sits in data-src, not src. Probe it first and only attach the
-    // real src once it loads: a card with no photo then costs one request
-    // instead of a request plus a broken <img>, and logs no console error.
-    const probe = new Image();
-    probe.onload = () => {
-      img.src = src;
-      card.classList.add('has-photo');
-    };
-    probe.src = src;
+    // Paths sit in data-src, not src. Probe first and only attach the real src
+    // once it loads: a card with no photo then costs one request instead of a
+    // request plus a broken <img>, and logs no console error.
+    let ready = 0;
+    imgs.forEach(img => {
+      const probe = new Image();
+      probe.onload = () => {
+        img.src = img.dataset.src;
+        card.classList.add('has-photo');
+        // only start the cross-fade once BOTH photos are decoded, otherwise
+        // the card would fade to an empty frame on the first cycle
+        if (++ready === imgs.length && imgs.length > 1) card.classList.add('has-two');
+      };
+      probe.src = img.dataset.src;
+    });
   });
 })();
 
