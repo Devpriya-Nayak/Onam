@@ -88,9 +88,7 @@ const flowerImages = (() => {
     items.forEach(el => el.classList.add('in'));
     return;
   }
-  let fired = false;
   const io = new IntersectionObserver((entries) => {
-    fired = true;
     entries.forEach((entry, i) => {
       if (entry.isIntersecting) {
         setTimeout(() => entry.target.classList.add('in'), i * 90);
@@ -100,20 +98,42 @@ const flowerImages = (() => {
   }, { threshold: 0.15, rootMargin: '0px 0px -60px 0px' });
   items.forEach(el => io.observe(el));
 
-  // Failsafe: if the observer never reports, fall back to a plain scroll
-  // check rather than leaving the page blank.
-  const manualPass = () => {
+  // Safety net. The observer is the primary path — it gives the nicer
+  // staggered timing — but it can call back reporting nothing and then go
+  // quiet (a tab that never paints, an aggressively throttled load). Judging
+  // it by "did it call back" is not enough, so instead we simply keep a cheap
+  // scroll check running until everything has actually been shown. Both paths
+  // only ever ADD the class, so they cannot fight each other.
+  const sweep = () => {
+    let pending = 0;
     items.forEach(el => {
+      if (el.classList.contains('in')) return;
       const r = el.getBoundingClientRect();
       if (r.top < window.innerHeight * 0.9 && r.bottom > 0) el.classList.add('in');
+      else pending++;
     });
+    if (!pending) {                      // everything is out — stop listening
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onScroll);
+      document.removeEventListener('visibilitychange', onShow);
+    }
   };
-  setTimeout(() => {
-    if (fired) return;
-    manualPass();
-    window.addEventListener('scroll', manualPass, { passive: true });
-    window.addEventListener('resize', manualPass, { passive: true });
-  }, 2500);
+  // Throttled on the clock, not on requestAnimationFrame: rAF does not run at
+  // all while a tab is hidden, so an rAF-gated check would stall on a page
+  // opened in a background tab and never recover.
+  let last = 0;
+  const onScroll = () => {
+    const now = Date.now();
+    if (now - last < 100) return;
+    last = now;
+    sweep();
+  };
+  const onShow = () => { if (!document.hidden) sweep(); };
+
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll, { passive: true });
+  document.addEventListener('visibilitychange', onShow);
+  setTimeout(sweep, 2500);
 })();
 
 /* ─────────── 2. Falling petals ─────────── */

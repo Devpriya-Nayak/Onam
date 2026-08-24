@@ -866,6 +866,63 @@ blockquote.ml cite{
 .foot-note a{color:var(--marigold);text-decoration:none;}
 .foot-note a:hover{text-decoration:underline;}
 
+/* ── credit line ── */
+.foot-credit{
+  display:flex;align-items:center;justify-content:center;
+  flex-wrap:wrap;gap:.5rem .7rem;
+  margin:2.2rem auto 0;padding-top:1.4rem;
+  max-width:520px;
+  font-size:.78rem;
+  border-top:1px solid rgba(201,162,39,.22);
+}
+.fc-rule{
+  height:1px;width:clamp(18px,6vw,48px);
+  background:linear-gradient(90deg,transparent,rgba(201,162,39,.75),transparent);
+}
+.fc-label{
+  color:rgba(255,243,214,.5);
+  letter-spacing:.14em;text-transform:uppercase;font-size:.7rem;
+}
+.fc-name{
+  position:relative;
+  font-family:var(--font-display);
+  font-weight:600;font-size:1.15rem;letter-spacing:.06em;
+  color:#F2C96B;                       /* fallback if background-clip is unsupported */
+  padding-bottom:.18rem;
+}
+/* gold foil sweeping across the name */
+@supports ((-webkit-background-clip:text) or (background-clip:text)){
+  .fc-name{
+    background:linear-gradient(100deg,
+      #C9A227 0%,#FFF3D6 20%,#F2A93B 38%,#FFF3D6 56%,#C9A227 78%,#C9A227 100%);
+    background-size:260% 100%;
+    -webkit-background-clip:text;background-clip:text;
+    color:transparent;
+    animation:fcShine 7s linear infinite;
+  }
+}
+@keyframes fcShine{
+  from{background-position:130% 0;}
+  to{background-position:-130% 0;}
+}
+/* hairline that grows out from the centre on hover */
+.fc-name::after{
+  content:"";position:absolute;left:50%;bottom:0;
+  width:0;height:1px;
+  background:linear-gradient(90deg,transparent,var(--marigold),transparent);
+  transform:translateX(-50%);
+  transition:width .45s cubic-bezier(.22,1,.36,1);
+}
+.foot-credit:hover .fc-name::after{width:100%;}
+.foot-credit:hover .fc-label{color:rgba(255,243,214,.72);}
+
+@media (max-width:420px){
+  .foot-credit{gap:.35rem .5rem;}
+  .fc-rule{display:none;}
+  .fc-label{font-size:.64rem;}
+  .fc-name{font-size:1.05rem;}
+}
+
 /* ═══════════ ANIMATION UTILITIES ═══════════ */
 .js .reveal{opacity:0;transform:translateY(34px);transition:opacity .9s cubic-bezier(.22,1,.36,1),transform .9s cubic-bezier(.22,1,.36,1);}
 .js .reveal[data-dir="left"]{transform:translate3d(-46px,18px,0);}
